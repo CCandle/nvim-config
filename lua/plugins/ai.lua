@@ -1,6 +1,21 @@
-local ollama_model = vim.env.NVIM_MINUET_OLLAMA_MODEL or vim.env.OLLAMA_MODEL or "deepseek-r1:14b"
+local ollama_model = vim.env.NVIM_MINUET_OLLAMA_MODEL or vim.env.OLLAMA_MODEL or "qwen2.5-coder:3b"
 local ollama_host = vim.env.OLLAMA_HOST or "http://localhost:11434"
 local deepseek_model = vim.env.NVIM_DEEPSEEK_MODEL or "deepseek-v4-flash"
+
+local function keychain_secret(service)
+	local result = vim.system(
+		{ "security", "find-generic-password", "-a", vim.env.USER or "", "-s", service, "-w" },
+		{ text = true }
+	):wait()
+	if result.code == 0 and result.stdout then
+		return vim.trim(result.stdout)
+	end
+	return nil
+end
+
+local function deepseek_api_key()
+	return vim.env.DEEPSEEK_API_KEY or keychain_secret("DEEPSEEK_API_KEY")
+end
 
 local function ensure_no_proxy(hosts)
 	local current = vim.env.NO_PROXY or vim.env.no_proxy or ""
@@ -27,8 +42,18 @@ return {
 	{
 		"milanglacier/minuet-ai.nvim",
 		event = "InsertEnter",
+		cmd = "Minuet",
+		keys = {
+			{
+				"<leader>ai",
+				function()
+					require("minuet.virtualtext").action.toggle_auto_trigger()
+				end,
+				desc = "Toggle local AI inline",
+			},
+		},
 		opts = {
-			provider = "openai_compatible",
+			provider = "openai_fim_compatible",
 			n_completions = 1,
 			context_window = 2048,
 			request_timeout = 8,
@@ -45,14 +70,18 @@ return {
 				},
 			},
 			provider_options = {
-				openai_compatible = {
-					api_key = "TERM",
+				openai_fim_compatible = {
+					api_key = function()
+						return "ollama"
+					end,
 					name = "Ollama",
-					end_point = ollama_host .. "/v1/chat/completions",
+					end_point = ollama_host .. "/v1/completions",
 					model = ollama_model,
+					stream = false,
 					optional = {
-						max_tokens = 128,
-						top_p = 0.9,
+						max_tokens = 80,
+						temperature = 0.1,
+						stop = { "\n\n" },
 					},
 				},
 			},
@@ -84,11 +113,14 @@ return {
 					deepseek = function()
 						return require("codecompanion.adapters").extend("deepseek", {
 							env = {
-								api_key = "DEEPSEEK_API_KEY",
+								api_key = deepseek_api_key,
 							},
 							schema = {
 								model = {
 									default = deepseek_model,
+								},
+								["thinking.type"] = {
+									default = vim.env.NVIM_DEEPSEEK_THINKING or "disabled",
 								},
 							},
 						})
