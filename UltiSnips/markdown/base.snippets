@@ -1,0 +1,172 @@
+global !p
+import vim
+
+if int(vim.eval("has('nvim')")) == 1:
+    try:
+        vim.exec_lua("""
+        if _G.in_markdown_mathzone == nil then
+            _G.in_markdown_mathzone = function()
+                local ok, ts = pcall(require, 'vim.treesitter')
+                if not ok then return false end
+
+                local node
+                if ts.get_node then
+                    node = ts.get_node()
+                elseif ts.get_node_at_cursor then
+                    node = ts.get_node_at_cursor()
+                end
+
+                while node do
+                    local t = node:type()
+                    if t == 'math_environment' or t == 'math_block' or t == 'inline_formula' or t == 'displayed_equation' or t == 'latex_block' then
+                        return true
+                    end
+                    node = node:parent()
+                end
+                return false
+            end
+        end
+        """)
+    except AttributeError:
+        vim.command("""lua
+        if _G.in_markdown_mathzone == nil then
+            _G.in_markdown_mathzone = function()
+                local ok, ts = pcall(require, 'vim.treesitter')
+                if not ok then return false end
+                local node
+                if ts.get_node then node = ts.get_node()
+                elseif ts.get_node_at_cursor then node = ts.get_node_at_cursor() end
+                while node do
+                    local t = node:type()
+                    if t == 'math_environment' or t == 'math_block' or t == 'inline_formula' or t == 'displayed_equation' or t == 'latex_block' then return true end
+                    node = node:parent()
+                end
+                return false
+            end
+        end
+        """)
+
+def math():
+    try:
+        if vim.eval("exists('*vimtex#syntax#in_mathzone')") == '1':
+            if vim.eval("vimtex#syntax#in_mathzone()") in ('1', 1):
+                return True
+    except Exception:
+        pass
+
+    if int(vim.eval("has('nvim')")) == 1:
+        try:
+            if vim.eval("v:lua.in_markdown_mathzone()") in (True, 1, '1'):
+                return True
+        except Exception:
+            pass
+
+    try:
+        col = max([1, int(vim.eval("col('.')")) - 1])
+        syn = vim.eval(f"synIDattr(synID(line('.'), {col}, 1), 'name')")
+        if syn and any(x in syn.lower() for x in ['math', 'tex', 'mkd', 'pandoc']):
+            return True
+    except Exception:
+        pass
+
+    try:
+        buf = vim.current.buffer
+        row, _ = vim.current.window.cursor
+
+        block_count = 0
+        for i in range(row - 1):
+            clean_line = buf[i].replace("\\$", "")
+            block_count += clean_line.count("$$")
+
+        if block_count % 2 == 1:
+            return True
+
+        before_cursor = vim.eval("strpart(getline('.'), 0, col('.') - 1)")
+        before_cursor = before_cursor.replace("\\$", "")
+
+        if before_cursor.count("$$") % 2 == 1:
+            return True
+
+        before_cursor_clean = before_cursor.replace("$$", "")
+        if before_cursor_clean.count("$") % 2 == 1:
+            return True
+    except Exception:
+        pass
+
+    return False
+
+def not_math():
+    return not math()
+endglobal
+
+priority 300
+
+context "not_math()"
+snippet "(?<![A-Za-z])bd" "Bold" rA
+**${1:${VISUAL}}**$0
+endsnippet
+
+context "not_math()"
+snippet "(?<![A-Za-z])it" "Italic" rA
+*${1:${VISUAL}}*$0
+endsnippet
+
+context "not_math()"
+snippet "(?<![A-Za-z])ic" "Inline Code" rA
+\`${1:${VISUAL}}\`$0
+endsnippet
+
+context "not_math()"
+snippet "(?<![A-Za-z])al" "Link" rA
+[${1:${VISUAL}}](${2:url})$0
+endsnippet
+
+context "not_math()"
+snippet "(?<![A-Za-z])lk" "Wiki Link" rA
+[[${1:${VISUAL}}]]$0
+endsnippet
+
+context "not_math()"
+snippet "(?<![A-Za-z])img" "Image" rA
+![${1:alt text}](${2:${VISUAL:path}})$0
+endsnippet
+
+context "not_math()"
+snippet cd "Code Block" bA
+\`\`\`${1:python}
+${2:${VISUAL}}
+\`\`\`
+$0
+endsnippet
+
+context "not_math()"
+snippet note "Callout" bA
+> [!${1:note}] ${2:Title}
+> ${3:${VISUAL}}
+$0
+endsnippet
+
+context "not_math()"
+snippet tb3 "Table 3x3" bA
+| ${1:Header 1} | ${2:Header 2} | ${3:Header 3} |
+| --- | --- | --- |
+| ${4:Data} | ${5:Data} | ${6:Data} |
+| ${7:Data} | ${8:Data} | ${9:Data} |
+$0
+endsnippet
+
+context "not_math()"
+snippet td "Todo list item" bA
+- [ ] $0
+endsnippet
+
+context "not_math()"
+snippet tc "Todo done" bA
+- [x] $0
+endsnippet
+
+context "not_math()"
+snippet hr "Horizontal Rule" bA
+---
+$0
+endsnippet

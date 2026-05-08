@@ -1,0 +1,144 @@
+global !p
+def math():
+	return vim.eval('vimtex#syntax#in_mathzone()') == '1'
+
+def comment(): 
+	return vim.eval('vimtex#syntax#in_comment()') == '1'
+
+def env(name):
+	[x,y] = vim.eval("vimtex#env#is_inside('" + name + "')") 
+	return x != '0' and y != '0'
+
+endglobal
+
+
+priority 2000
+
+context "math()"
+snippet rat "额定值" iA
+_{$1\text{N}}$0
+endsnippet
+
+context "math()"
+snippet load "负载" iA
+_{$1\text{L}}$0
+endsnippet
+
+context "math()"
+snippet arm "电枢" iA
+_\text{a}
+endsnippet
+
+context "math()"
+snippet fld "励磁" iA
+_\text{f}
+endsnippet
+
+context "math()"
+snippet elec "电磁" iA
+_\text{e}
+endsnippet
+
+context "math()"
+snippet main "主" iA
+_\text{m}
+endsnippet
+
+context "math()"
+snippet st "起动" iA
+_\text{st}
+endsnippet
+
+context "math()"
+snippet kk "短路" iA
+_{$1\text{k}}$0
+endsnippet
+
+
+# 磁通相关
+context "math()"
+snippet phi "磁通 Φ" iA
+\varphi
+endsnippet
+
+context "math()"
+snippet Phi "磁通 Φ" iA
+\varPhi
+endsnippet
+
+context "math()"
+snippet pcu "铜耗" iA
+p_\text{Cu}
+endsnippet
+
+context "math()"
+snippet pfe "铁耗" iA
+p_\text{Fe}
+endsnippet
+
+# 常用组合
+context "math()"
+snippet wt "ωt" iA
+\omega t
+endsnippet
+
+# 变压器
+context "math()"
+snippet uu1 "U1" iA
+\dot{U}_1
+endsnippet
+
+context "math()"
+snippet uu2 "U2" iA
+\dot{U}_2
+endsnippet
+
+context "math()"
+snippet ii1 "I1" iA
+\dot{I}_1
+endsnippet
+
+context "math()"
+snippet ii2 "I2" iA
+\dot{I}_2
+endsnippet
+
+context "math()"
+snippet ee1 "E1" iA
+\dot{E}_1
+endsnippet
+
+context "math()"
+snippet ee2 "E2" iA
+\dot{E}_2
+endsnippet
+
+context "math()"
+snippet iim "Im" iA
+\dot{I}_\text{m}
+endsnippet
+
+context "math()"
+snippet rrm "Rm" iA
+R_\text{m}
+endsnippet
+
+context "math()"
+snippet xxm "Xm" iA
+X_\text{m}
+endsnippet
+
+context "math()"
+snippet pu "p.u." iA
+^*
+endsnippet
+
+context "math()"
+snippet SI "si" iA
+\SI{$1}{$2}$0
+endsnippet
+
+context "math()"
+snippet si "si" i
+(\si{$1})$0
+endsnippet

@@ -1,0 +1,13 @@
+.DS_Store
+*.swp
+*.swo
+*.tmp
+*.log
+.env
+.env.*
+!.env.example
+
+# Local editor/runtime state belongs under ~/.local/share/nvim or ~/.local/state/nvim.
+.lazy/
+.mason/
+
