@@ -1,6 +1,5 @@
 return {
 	"nvim-treesitter/nvim-treesitter",
-	branch = "master",
 	lazy = false,
 	build = ":TSUpdate",
 	dependencies = {
@@ -8,12 +7,48 @@ return {
 		"HiPhish/rainbow-delimiters.nvim",
 	},
 
-	-- 刪除這一行（舊版寫法）
-	-- main = "nvim-treesitter.configs",
-
 	config = function()
-		require("nvim-treesitter.configs").setup({
-			ensure_installed = {
+		local languages = {
+			"c",
+			"cpp",
+			"python",
+			"lua",
+			"vim",
+			"vimdoc",
+			"query",
+			"bibtex",
+			"markdown",
+			"markdown_inline",
+			"systemverilog",
+			"vhdl",
+			"matlab",
+			"html",
+			"css",
+			"javascript",
+		}
+
+		pcall(vim.treesitter.language.register, "bibtex", "bib")
+		pcall(vim.treesitter.language.register, "systemverilog", { "verilog", "systemverilog" })
+
+		local treesitter = require("nvim-treesitter")
+		local installed = {}
+		for _, lang in ipairs(treesitter.get_installed("parsers")) do
+			installed[lang] = true
+		end
+
+		local missing = {}
+		for _, lang in ipairs(languages) do
+			if not installed[lang] then
+				table.insert(missing, lang)
+			end
+		end
+
+		if #missing > 0 then
+			treesitter.install(missing)
+		end
+
+		vim.api.nvim_create_autocmd("FileType", {
+			pattern = {
 				"c",
 				"cpp",
 				"python",
@@ -21,28 +56,20 @@ return {
 				"vim",
 				"vimdoc",
 				"query",
-				"bibtex",
+				"bib",
 				"markdown",
-				"markdown_inline",
 				"verilog",
+				"systemverilog",
 				"vhdl",
 				"matlab",
 				"html",
 				"css",
 				"javascript",
 			},
-
-			auto_install = true,
-			sync_install = false,
-
-			highlight = {
-				enable = true,
-				additional_vim_regex_highlighting = { "latex" },
-			},
-
-			indent = { enable = true },
-
-			incremental_selection = { enable = true },
+			callback = function()
+				pcall(vim.treesitter.start)
+				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+			end,
 		})
 
 		-- rainbow-delimiters 的正確配置方式（放在這裡最保險）
