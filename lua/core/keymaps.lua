@@ -5,6 +5,7 @@ vim.g.maplocalleader = " "
 
 local keymap = vim.keymap
 local wk = require("which-key")
+local role = require("core.role")
 
 -- ==================== 基础映射（不需 which-key 提示的，直接 set） ====================
 
@@ -176,18 +177,14 @@ wk.add({ -- 保存 & 退出组
 {
     "<leader>h",
     "<cmd>Dashboard<CR>",
-    desc = "Home / Dashboard"
+    desc = "Home / Dashboard",
+    cond = role.is_mac,
 } -- 快速返回启动页
 })
 
--- 更改环境 (Change) -> cse
-keymap.set("n", "cse", "<Plug>(vimtex-env-change)", { desc = "Change Environment" })
-
--- 删除环境 (Delete) -> dse
-keymap.set("n", "dse", "<Plug>(vimtex-env-delete)", { desc = "Delete Environment" })
-
--- 切换星号 (Toggle Star) -> tse
-keymap.set("n", "cs*", "<Plug>(vimtex-env-toggle-star)", { desc = "Toggle Environment Star" })
-
--- lua 示例
-keymap.set('n', '<leader>us', ':call UltiSnips#RefreshSnippets()<CR>', { silent = true })
+if role.is_mac then
+  keymap.set("n", "cse", "<Plug>(vimtex-env-change)", { desc = "Change Environment" })
+  keymap.set("n", "dse", "<Plug>(vimtex-env-delete)", { desc = "Delete Environment" })
+  keymap.set("n", "cs*", "<Plug>(vimtex-env-toggle-star)", { desc = "Toggle Environment Star" })
+  keymap.set('n', '<leader>us', ':call UltiSnips#RefreshSnippets()<CR>', { silent = true })
+end

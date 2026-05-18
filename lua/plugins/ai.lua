@@ -3,6 +3,9 @@ local ollama_host = vim.env.OLLAMA_HOST or "http://localhost:11434"
 local deepseek_model = vim.env.NVIM_DEEPSEEK_MODEL or "deepseek-v4-flash"
 
 local function keychain_secret(service)
+	if vim.fn.executable("security") ~= 1 then
+		return nil
+	end
 	local result = vim.system(
 		{ "security", "find-generic-password", "-a", vim.env.USER or "", "-s", service, "-w" },
 		{ text = true }

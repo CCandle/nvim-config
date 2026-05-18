@@ -6,14 +6,21 @@ local function get_codelldb()
 	return vim.fn.exepath("codelldb")
 end
 
+local role = require("core.role")
+
+local dap_deps = {
+	"rcarriga/nvim-dap-ui",
+	"nvim-neotest/nvim-nio",
+}
+
+if role.is_mac then
+	table.insert(dap_deps, "mfussenegger/nvim-dap-python")
+end
+
 return {
 	{
 		"mfussenegger/nvim-dap",
-		dependencies = {
-			"rcarriga/nvim-dap-ui",
-			"nvim-neotest/nvim-nio",
-			"mfussenegger/nvim-dap-python",
-		},
+		dependencies = dap_deps,
 		keys = {
 			{
 				"<leader>db",
@@ -82,30 +89,57 @@ return {
 			dap.listeners.before.event_terminated["dapui_config"] = dapui.close
 			dap.listeners.before.event_exited["dapui_config"] = dapui.close
 
-			require("dap-python").setup(vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python")
+			if role.is_mac then
+				require("dap-python").setup(vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python")
 
-			dap.adapters.codelldb = {
-				type = "server",
-				port = "${port}",
-				executable = {
-					command = get_codelldb(),
-					args = { "--port", "${port}" },
-				},
-			}
+				dap.adapters.codelldb = {
+					type = "server",
+					port = "${port}",
+					executable = {
+						command = get_codelldb(),
+						args = { "--port", "${port}" },
+					},
+				}
 
-			dap.configurations.cpp = {
-				{
-					name = "Launch executable",
-					type = "codelldb",
-					request = "launch",
-					program = function()
-						return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/build/", "file")
-					end,
-					cwd = "${workspaceFolder}",
-					stopOnEntry = false,
-				},
-			}
-			dap.configurations.c = dap.configurations.cpp
+				dap.configurations.cpp = {
+					{
+						name = "Launch executable",
+						type = "codelldb",
+						request = "launch",
+						program = function()
+							return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/build/", "file")
+						end,
+						cwd = "${workspaceFolder}",
+						stopOnEntry = false,
+					},
+				}
+				dap.configurations.c = dap.configurations.cpp
+			end
+
+			if role.is_mpsoc then
+				dap.adapters.gdb = {
+					type = "server",
+					port = "${port}",
+					executable = {
+						command = "gdb",
+						args = { "-q", "--interpreter=dap" },
+					},
+				}
+
+				dap.configurations.cpp = {
+					{
+						name = "Launch (GDB)",
+						type = "gdb",
+						request = "launch",
+						program = function()
+							return vim.fn.input("Executable: ", vim.fn.getcwd() .. "/build/", "file")
+						end,
+						cwd = "${workspaceFolder}",
+						stopAtBeginningOfMainSubprogram = false,
+					},
+				}
+				dap.configurations.c = dap.configurations.cpp
+			end
 		end,
 	},
 }
