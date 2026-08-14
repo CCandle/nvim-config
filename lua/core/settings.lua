@@ -19,13 +19,13 @@ return {
 
   ui = {
     dashboard = "classic", -- classic | snacks
-    explorer = "neo-tree", -- neo-tree | oil | hybrid
+    explorer = "hybrid", -- neo-tree | oil | hybrid
     transparent = false,
   },
 
   experiments = {
     snacks = false,
-    oil = false,
+    oil = true,
     pet = false,
   },
 
