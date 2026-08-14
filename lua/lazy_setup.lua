@@ -32,9 +32,7 @@ local plugins = {
 }
 
 local function add_if(enabled, module)
-  if enabled then
-    table.insert(plugins, { import = module })
-  end
+  if enabled then table.insert(plugins, { import = module }) end
 end
 
 add_if(settings.plugins.completion, "plugins.completion")
@@ -61,6 +59,9 @@ if settings.ui.explorer == "neo-tree" or settings.ui.explorer == "hybrid" then
 end
 add_if(settings.experiments.snacks, "plugins.snacks")
 add_if(settings.experiments.oil, "plugins.oil")
-add_if(settings.experiments.pet, "plugins.pet")
 
 require("lazy").setup(plugins)
+
+if settings.experiments.pet then
+  require("core.pet").setup()
+end
