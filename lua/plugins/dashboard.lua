@@ -2,9 +2,12 @@ return {
   "nvimdev/dashboard-nvim",
   event = "VimEnter",
   dependencies = { "nvim-tree/nvim-web-devicons" },
+  keys = {
+    { "<leader>h", "<cmd>Dashboard<CR>", desc = "Home / Dashboard" },
+  },
   config = function()
     require("dashboard").setup({
-      theme = "hyper",  -- 或者 "doom" 风格
+      theme = "hyper",
       shortcut_type = "number",
       change_to_vcs_root = true,
       config = {
