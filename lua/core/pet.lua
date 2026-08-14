@@ -1,16 +1,10 @@
 local M = {}
 
 local ns = vim.api.nvim_create_namespace("carlos_companion")
-local state = {
-  enabled = true,
-  frame = 1,
-  rendered_buf = nil,
-  last_activity = vim.uv.now(),
-  forced_mood = nil,
-  forced_until = 0,
-  last_errors = {},
-  timer = nil,
-}
+
+-- 渲染节奏：帧动画由 timer 单一驱动（600ms/帧），事件只做重定位与 mood 切换
+local FRAME_MS = 600
+local SLEEP_AFTER_MS = 90000
 
 local sprites = {
   idle = {
@@ -35,6 +29,19 @@ local sprites = {
   },
 }
 
+local state = {
+  enabled = true,
+  frame = 1,
+  rendered_buf = nil,
+  last_activity = vim.uv.now(),
+  forced_mood = nil,
+  forced_until = 0,
+  last_errors = {},
+  timer = nil,
+  last_render_key = nil,
+  in_insert = false, -- 由 InsertEnter/InsertLeave 事件维护，不轮询 mode()
+}
+
 local function now()
   return vim.uv.now()
 end
@@ -50,20 +57,24 @@ local function valid_buffer(buf)
   return true
 end
 
+-- 状态机（事件状态优先，不轮询 mode()）：
+--   1. 一次性事件（保存→happy、诊断变化→worried/happy、:PetMood）
+--   2. 插入模式（state.in_insert）→ 恒 typing，不因打字停顿掉落
+--   3. normal 长空闲（>90s）→ sleep
+--   4. 默认 → idle
 local function current_mood()
   local t = now()
   if state.forced_mood and t < state.forced_until then
     return state.forced_mood
   end
-  state.forced_mood = nil
-
-  local mode = vim.api.nvim_get_mode().mode:sub(1, 1)
-  if mode == "i" and t - state.last_activity < 1200 then
-    return "typing"
+  if state.forced_mood then
+    state.forced_mood = nil -- 过期清理
   end
 
-  local idle_for = t - state.last_activity
-  if idle_for > 90000 then
+  if state.in_insert then
+    return "typing"
+  end
+  if t - state.last_activity > SLEEP_AFTER_MS then
     return "sleep"
   end
   return "idle"
@@ -84,25 +95,9 @@ local function visible_bounds(win)
   end)
 end
 
-local function target_row(buf, win)
-  local cursor = vim.api.nvim_win_get_cursor(win)[1] - 1
-  local bounds = visible_bounds(win)
-  local top, bottom = bounds[1], bounds[2]
-  local last = math.max(0, vim.api.nvim_buf_line_count(buf) - 1)
-
-  -- A small vertical bob makes the companion feel present without covering the
-  -- cursor line continuously. It stays inside the visible buffer range.
-  local offsets = { 2, 1, 3, 1 }
-  local row = cursor + offsets[((state.frame - 1) % #offsets) + 1]
-  row = math.min(row, bottom, last)
-  row = math.max(row, top, 0)
-  if row == cursor and cursor > top then
-    row = cursor - 1
-  end
-  return row
-end
-
-local function render()
+-- advance_frame=true 仅由 timer 传入；事件触发只重定位/换 mood，不换帧，
+-- 避免 CursorMoved 高频事件把帧速打到不可控（闪烁感来源）。
+local function render(advance_frame)
   if not state.enabled then return end
   local win = vim.api.nvim_get_current_win()
   if not vim.api.nvim_win_is_valid(win) then return end
@@ -112,15 +107,33 @@ local function render()
     return
   end
 
-  clear_previous(buf)
-  vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
-
   local mood = current_mood()
   local variants = sprites[mood] or sprites.idle
-  state.frame = (state.frame % #variants) + 1
+  if advance_frame then
+    state.frame = (state.frame % #variants) + 1
+  end
   local sprite = variants[state.frame]
-  local row = target_row(buf, win)
 
+  -- 位置：跟随光标；idle 时轻微上下浮动（±1 行，节拍平缓），打字/事件表情固定不动
+  local cursor = vim.api.nvim_win_get_cursor(win)[1] - 1
+  local row = cursor
+  if mood == "idle" then
+    local bob = { 0, 1, 0, -1 }
+    row = cursor + bob[((state.frame - 1) % #bob) + 1]
+  end
+
+  local bounds = visible_bounds(win)
+  local last = math.max(0, vim.api.nvim_buf_line_count(buf) - 1)
+  row = math.max(row, bounds[1])
+  row = math.min(row, bounds[2], last)
+
+  -- 去重：同 buffer、同 mood、同帧、同行不重复绘制
+  local key = string.format("%d:%s:%d:%d", buf, mood, state.frame, row)
+  if state.last_render_key == key then return end
+  state.last_render_key = key
+
+  clear_previous(buf)
+  vim.api.nvim_buf_clear_namespace(buf, ns, 0, -1)
   vim.api.nvim_buf_set_extmark(buf, ns, row, 0, {
     virt_text = { { sprite[1], sprite[2] } },
     virt_text_pos = "right_align",
@@ -135,26 +148,44 @@ function M.react(mood, duration_ms)
   state.forced_mood = mood
   state.forced_until = now() + (duration_ms or 2200)
   touch()
-  render()
+  render(false)
 end
 
 function M.setup()
   local group = vim.api.nvim_create_augroup("CarlosCompanion", { clear = true })
 
-  vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "BufEnter", "WinEnter" }, {
+  -- 光标/窗口移动：只更新活动时间 + 重定位，不换帧
+  vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
     group = group,
     callback = function()
       touch()
-      render()
+      render(false)
     end,
   })
 
-  vim.api.nvim_create_autocmd("InsertCharPre", {
+  vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
     group = group,
     callback = function()
       touch()
-      state.forced_mood = "typing"
-      state.forced_until = now() + 700
+      render(false)
+    end,
+  })
+
+  -- 模式切换：维护 in_insert 状态并立即重绘（i 恒 typing，退出即回 idle）
+  vim.api.nvim_create_autocmd("InsertEnter", {
+    group = group,
+    callback = function()
+      state.in_insert = true
+      touch()
+      render(false)
+    end,
+  })
+  vim.api.nvim_create_autocmd("InsertLeave", {
+    group = group,
+    callback = function()
+      state.in_insert = false
+      touch()
+      render(false)
     end,
   })
 
@@ -181,11 +212,13 @@ function M.setup()
 
   vim.api.nvim_create_user_command("PetToggle", function()
     state.enabled = not state.enabled
-    if not state.enabled and state.rendered_buf and vim.api.nvim_buf_is_valid(state.rendered_buf) then
-      vim.api.nvim_buf_clear_namespace(state.rendered_buf, ns, 0, -1)
+    if not state.enabled then
+      if state.rendered_buf and vim.api.nvim_buf_is_valid(state.rendered_buf) then
+        vim.api.nvim_buf_clear_namespace(state.rendered_buf, ns, 0, -1)
+      end
     else
       touch()
-      render()
+      render(false)
     end
     vim.notify("Companion: " .. (state.enabled and "on" or "off"))
   end, {})
@@ -199,7 +232,9 @@ function M.setup()
   end, { nargs = 1, complete = function() return { "idle", "typing", "happy", "worried", "sleep" } end })
 
   state.timer = vim.uv.new_timer()
-  state.timer:start(600, 600, vim.schedule_wrap(render))
+  state.timer:start(FRAME_MS, FRAME_MS, vim.schedule_wrap(function()
+    render(true)
+  end))
 
   vim.api.nvim_create_autocmd("VimLeavePre", {
     group = group,
@@ -211,7 +246,7 @@ function M.setup()
     end,
   })
 
-  render()
+  render(false)
 end
 
 return M
