@@ -26,7 +26,7 @@ return {
   experiments = {
     snacks = false,
     oil = false,
-    pet = false,
+    pet = true,
   },
 
   ime = {
