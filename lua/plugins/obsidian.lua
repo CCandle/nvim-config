@@ -1,5 +1,20 @@
 local vault_root = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents"
 
+-- 动态发现真实 vault（含 .obsidian/ 目录才算），避免过时硬编码路径导致启动错误
+local function discover_workspaces()
+  local workspaces = {}
+  local expanded = vim.fn.expand(vault_root)
+  if vim.fn.isdirectory(expanded) == 1 then
+    for _, name in ipairs(vim.fn.readdir(expanded)) do
+      local dir = expanded .. "/" .. name
+      if vim.fn.isdirectory(dir .. "/.obsidian") == 1 then
+        table.insert(workspaces, { name = name, path = dir })
+      end
+    end
+  end
+  return workspaces
+end
+
 return {
   "obsidian-nvim/obsidian.nvim",
   version = "*",
@@ -11,10 +26,7 @@ return {
   dependencies = { "nvim-lua/plenary.nvim" },
   opts = {
     legacy_commands = false,
-    workspaces = {
-      { name = "MANTIS", path = vault_root .. "/MANTIS" },
-      { name = "Vault2", path = vault_root .. "/Vault2" },
-    },
+    workspaces = discover_workspaces(),
     picker = { name = "telescope.nvim" },
     frontmatter = { enabled = false },
     daily_notes = { enabled = false },
