@@ -52,6 +52,7 @@ add_if(settings.plugins.bufferline, "plugins.bufferline")
 add_if(settings.plugins.neoscroll, "plugins.neoscroll")
 add_if(settings.plugins.smear_cursor, "plugins.smear-cursor")
 add_if(settings.plugins.persistence, "plugins.persistence")
+add_if(settings.ime.squirrel_cli, "plugins.ime")
 
 if settings.ui.dashboard == "classic" then
   table.insert(plugins, { import = "plugins.dashboard" })
