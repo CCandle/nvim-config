@@ -76,14 +76,18 @@ local function clear_previous(buf)
 end
 
 local function visible_bounds(win)
+  -- nvim_win_call 只传回回调的单个返回值，必须用 table 包装，否则 bottom 恒为 nil
   return vim.api.nvim_win_call(win, function()
-    return vim.fn.line("w0") - 1, vim.fn.line("w$") - 1
+    local w0 = tonumber(vim.fn.line("w0")) or 1
+    local ws = tonumber(vim.fn.line("w$")) or 1
+    return { w0 - 1, ws - 1 }
   end)
 end
 
 local function target_row(buf, win)
   local cursor = vim.api.nvim_win_get_cursor(win)[1] - 1
-  local top, bottom = visible_bounds(win)
+  local bounds = visible_bounds(win)
+  local top, bottom = bounds[1], bounds[2]
   local last = math.max(0, vim.api.nvim_buf_line_count(buf) - 1)
 
   -- A small vertical bob makes the companion feel present without covering the
