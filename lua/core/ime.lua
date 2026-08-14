@@ -16,6 +16,21 @@ local function squirrel_bin()
   return nil
 end
 
+-- 探测 Squirrel 是否支持 CLI（--getascii 应快速返回 ascii/nascii）。
+-- stable 1.1.2 无此 CLI：binary 收到参数会走 IMKServer 初始化并挂起，
+-- 因此探测必须带超时并 kill，否则每次模式切换都会泄漏一个挂起进程。
+local function cli_supported()
+  local bin = squirrel_bin()
+  if not bin then return false end
+  local probe = vim.system({ bin, "--getascii" }, { text = true })
+  local done = probe:wait(1500)
+  if done == nil then
+    probe:kill()
+    return false
+  end
+  return done.code == 0
+end
+
 local function runnable_buffer(buf)
   return vim.api.nvim_buf_is_valid(buf)
     and vim.bo[buf].buftype == ""
@@ -100,6 +115,17 @@ end
 
 function M.setup()
   if vim.fn.has("mac") ~= 1 or not squirrel_bin() then
+    return
+  end
+
+  -- Squirrel stable 无 CLI：干净降级（一次性提示，不注册任何 autocmd），
+  -- 未来升级到支持 CLI 的 Squirrel 后自动启用，无需改配置。
+  if not cli_supported() then
+    vim.notify(
+      "Squirrel CLI bridge disabled: installed Squirrel does not support --getascii. "
+        .. "Requires a Squirrel build with notification CLI (upstream master).",
+      vim.log.levels.WARN
+    )
     return
   end
 
