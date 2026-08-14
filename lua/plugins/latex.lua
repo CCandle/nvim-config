@@ -22,8 +22,15 @@ return { -- VimTeX 主插件
 			}
 
 			vim.g.vimtex_compiler_latexmk = {
-				build_dir = "build",
-				options = { "-verbose", "-file-line-error", "-shell-escape", "-synctex=1", "-interaction=nonstopmode" },
+				out_dir = "build",
+				options = {
+					"-verbose",
+					"-file-line-error",
+					"-halt-on-error",
+					"-shell-escape",
+					"-synctex=1",
+					"-interaction=nonstopmode",
+				},
 			}
 
 			vim.g.vimtex_texcount_custom_arg = "-ch -total"
