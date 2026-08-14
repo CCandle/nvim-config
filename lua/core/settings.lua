@@ -18,13 +18,13 @@ return {
   },
 
   ui = {
-    dashboard = "classic", -- classic | snacks
+    dashboard = "snacks", -- classic | snacks
     explorer = "neo-tree", -- neo-tree | oil | hybrid
     transparent = false,
   },
 
   experiments = {
-    snacks = false,
+    snacks = true,
     oil = false,
     pet = false,
   },
