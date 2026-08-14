@@ -30,6 +30,6 @@ return {
   },
 
   ime = {
-    squirrel_cli = false,
+    squirrel_cli = true,
   },
 }
