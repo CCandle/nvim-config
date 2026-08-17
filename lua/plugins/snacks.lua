@@ -14,11 +14,9 @@ return {
           { section = "startup" },
         },
       },
-      zen = { enabled = true },
     },
     keys = {
       { "<leader>h", function() Snacks.dashboard() end, desc = "Home / Dashboard" },
-      { "<leader>uz", function() Snacks.zen() end, desc = "Toggle Zen mode" },
     },
   },
 }
