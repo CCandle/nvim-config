@@ -29,6 +29,7 @@ local plugins = {
   { import = "plugins.neogit" },
   { import = "plugins.terminal" },
   { import = "plugins.treesitter-context" },
+  { import = "plugins.familiar" },
 }
 
 local function add_if(enabled, module)
