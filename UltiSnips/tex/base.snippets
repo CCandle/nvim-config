@@ -110,34 +110,118 @@ snippet desc "Description" b
 \end{description}
 endsnippet
 
-snippet def "Definition" b
+# --- 数学笔记环境（对应 CarlosTexNote.cls） ----------------------------------
+# 统一规则：行首触发、Tab 展开；正文写完后按 Tab 跳到 \end{...} 之后。
+
+snippet def "定义" b
 \begin{definition}[$1]
-	$0
+	$2
 \end{definition}
+$0
 endsnippet
 
-snippet theo "Theorem" b
+snippet thm "定理" b
 \begin{theorem}[$1]
-	$0
+	$2
 \end{theorem}
+$0
 endsnippet
 
-snippet lem "Lemma" b
-\begin{lemma}[$1]
-	$0
-\end{lemma}
+snippet prp "性质" b
+\begin{property}[$1]
+	$2
+\end{property}
+$0
 endsnippet
 
-snippet cor "Corollary" b
-\begin{corollary}
-	$0
+snippet cor "推论" b
+\begin{corollary}[$1]
+	$2
 \end{corollary}
+$0
 endsnippet
 
-snippet eg "Example" b
-\begin{example}
-	$0
+snippet lem "引理" b
+\begin{lemma}[$1]
+	$2
+\end{lemma}
+$0
+endsnippet
+
+snippet pro "命题" b
+\begin{proposition}[$1]
+	$2
+\end{proposition}
+$0
+endsnippet
+
+snippet rem "注" b
+\begin{remark}[$1]
+	$2
+\end{remark}
+$0
+endsnippet
+
+snippet eg "例题" b
+\begin{example}[$1]
+	$2
 \end{example}
+$0
+endsnippet
+
+snippet sol "解答" b
+\begin{solution}
+	$1
+\end{solution}
+$0
+endsnippet
+
+snippet egs "例题 + 解答" b
+\begin{example}[$1]
+	$2
+\end{example}
+
+\begin{solution}
+	$3
+\end{solution}
+$0
+endsnippet
+
+snippet pf "证明" b
+\begin{proof}[$1]
+	$2
+\end{proof}
+$0
+endsnippet
+
+# --- 非编号 callout（markdown callout 风格） ---------------------------------
+
+snippet key "重点" b
+\begin{keybox}[$1]
+	$2
+\end{keybox}
+$0
+endsnippet
+
+snippet warn "易错" b
+\begin{warningbox}[$1]
+	$2
+\end{warningbox}
+$0
+endsnippet
+
+snippet mthd "方法" b
+\begin{methodbox}[$1]
+	$2
+\end{methodbox}
+$0
+endsnippet
+
+snippet smry "小结" b
+\begin{summarybox}[$1]
+	$2
+\end{summarybox}
+$0
 endsnippet
 
 snippet pac "Package" b
@@ -166,8 +250,8 @@ snippet nn "Tikz node" w
 $0
 endsnippet
 
-snippet SI "SI" iA
-\SI{$1}{$2}
+snippet SI "siunitx quantity" iA
+\qty{$1}{$2}$0
 endsnippet
 
 snippet letw "let omega" iA

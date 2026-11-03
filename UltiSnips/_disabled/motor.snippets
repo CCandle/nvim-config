@@ -1,3 +1,7 @@
+# 已暂时禁用（原位置：UltiSnips/tex/motor.snippets）。
+# 原因：UltiSnips 会加载 UltiSnips/tex/ 下的所有文件，而该文件里大量 math 区
+# 自动展开的短触发词（st / pu / arm / fld / main / load / rat / kk ...）会干扰
+# 数学与专业课笔记的输入。需要时把本文件移回 UltiSnips/tex/ 即可恢复。
 global !p
 def math():
 	return vim.eval('vimtex#syntax#in_mathzone()') == '1'
