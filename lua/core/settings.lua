@@ -30,6 +30,8 @@ return {
   },
 
   ime = {
-    squirrel_cli = false,
+    -- Squirrel (鼠须管) modal input-method bridge: English in Normal mode,
+    -- per-buffer Chinese/English state restored in Insert mode. macOS only.
+    squirrel_cli = true,
   },
 }

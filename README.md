@@ -43,6 +43,9 @@ return {
     oil = false,
     pet = false,
   },
+  ime = {
+    squirrel_cli = true,
+  },
 }
 ```
 
@@ -58,6 +61,27 @@ return {
 - `<leader>e`: Neo-tree
 - `<leader>tt` / `<C-\>`: floating terminal
 - `<leader>gg`: Neogit
+
+### Input method (Squirrel / 鼠须管)
+
+On macOS the optional `lua/core/ime.lua` bridge keeps Squirrel in English while
+editing in Normal mode and restores each buffer's own Chinese/English state when
+Insert mode is entered. It is enabled by `settings.ime.squirrel_cli` and uses
+Squirrel's CLI (`--getascii`, `--ascii`, `--nascii`, supported since 1.1). All
+calls are asynchronous and never block the UI.
+
+- Normal/Visual mode and Neovim startup: English.
+- `InsertEnter`: restore the state saved for the current buffer (English if unset).
+- `InsertLeave`: save the current state, then switch back to English.
+- Rapid mode switches are coalesced, so a stale asynchronous reply cannot win.
+- `NVIM_SQUIRREL_BIN` overrides the default binary path
+  (`/Library/Input Methods/Squirrel.app/Contents/MacOS/Squirrel`).
+- `:SquirrelImeStatus` shows the bridge/CLI state and call statistics;
+  `:SquirrelImeAutoToggle` turns automatic switching off/on without forcing the
+  current input-method state.
+
+If the CLI is missing or Squirrel is restarting, the bridge degrades quietly
+(one warning at most) and editing continues normally.
 
 ### Tree-sitter
 
