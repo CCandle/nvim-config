@@ -96,12 +96,12 @@ snip.rv = stripped[0:i] + "\\frac{" + stripped[i+1:-1] + "}"
 endsnippet
 
 context "math()"
-snippet '([A-Za-z])(\d)' "auto subscript" wrA
+snippet '\b([A-Za-z])(\d)' "auto subscript" wrA
 `!p snip.rv = match.group(1)`_`!p snip.rv = match.group(2)`
 endsnippet
 
 context "math()"
-snippet '([A-Za-z])_(\d\d)' "auto subscript2" wrA
+snippet '\b([A-Za-z])_(\d\d)' "auto subscript2" wrA
 `!p snip.rv = match.group(1)`_{`!p snip.rv = match.group(2)`}
 endsnippet
 
@@ -123,12 +123,129 @@ snippet floor "floor" iA
 \left\lfloor $1 \right\rfloor$0
 endsnippet
 
-snippet pmat "pmat" iA
+snippet pmat "pmat" i
 \begin{pmatrix} $1 \end{pmatrix} $0
 endsnippet
 
-snippet bmat "bmat" iA
+snippet bmat "bmat" i
 \begin{bmatrix} $1 \end{bmatrix} $0
+endsnippet
+
+
+# --- 矩阵骨架：2/3/4/n 阶（先选所有 a，再逐格 Tab） -------------------------
+snippet vmat "vmatrix" i
+\begin{vmatrix} $1 \end{vmatrix} $0
+endsnippet
+
+snippet pmat2 "pmatrix 2x2" i
+\begin{pmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} \\\\
+	${4:${1:a}_{21}} & ${5:${1:a}_{22}}
+\end{pmatrix}
+$0
+endsnippet
+
+snippet pmat3 "pmatrix 3x3" i
+\begin{pmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} & ${4:${1:a}_{13}} \\\\
+	${5:${1:a}_{21}} & ${6:${1:a}_{22}} & ${7:${1:a}_{23}} \\\\
+	${8:${1:a}_{31}} & ${9:${1:a}_{32}} & ${10:${1:a}_{33}}
+\end{pmatrix}
+$0
+endsnippet
+
+snippet pmat4 "pmatrix 4x4" i
+\begin{pmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} & ${4:${1:a}_{13}} & ${5:${1:a}_{14}} \\\\
+	${6:${1:a}_{21}} & ${7:${1:a}_{22}} & ${8:${1:a}_{23}} & ${9:${1:a}_{24}} \\\\
+	${10:${1:a}_{31}} & ${11:${1:a}_{32}} & ${12:${1:a}_{33}} & ${13:${1:a}_{34}} \\\\
+	${14:${1:a}_{41}} & ${15:${1:a}_{42}} & ${16:${1:a}_{43}} & ${17:${1:a}_{44}}
+\end{pmatrix}
+$0
+endsnippet
+
+snippet pmatn "pmatrix nxn" i
+\begin{pmatrix}
+	${1:a}_{11} & $1_{12} & \cdots & $1_{1${2:n}} \\\\
+	$1_{21} & $1_{22} & \cdots & $1_{2$2} \\\\
+	\vdots & \vdots & \ddots & \vdots \\\\
+	$1_{$2 1} & $1_{$2 2} & \cdots & $1_{$2$2}
+\end{pmatrix}
+$0
+endsnippet
+
+snippet bmat2 "bmatrix 2x2" i
+\begin{bmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} \\\\
+	${4:${1:a}_{21}} & ${5:${1:a}_{22}}
+\end{bmatrix}
+$0
+endsnippet
+
+snippet bmat3 "bmatrix 3x3" i
+\begin{bmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} & ${4:${1:a}_{13}} \\\\
+	${5:${1:a}_{21}} & ${6:${1:a}_{22}} & ${7:${1:a}_{23}} \\\\
+	${8:${1:a}_{31}} & ${9:${1:a}_{32}} & ${10:${1:a}_{33}}
+\end{bmatrix}
+$0
+endsnippet
+
+snippet bmat4 "bmatrix 4x4" i
+\begin{bmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} & ${4:${1:a}_{13}} & ${5:${1:a}_{14}} \\\\
+	${6:${1:a}_{21}} & ${7:${1:a}_{22}} & ${8:${1:a}_{23}} & ${9:${1:a}_{24}} \\\\
+	${10:${1:a}_{31}} & ${11:${1:a}_{32}} & ${12:${1:a}_{33}} & ${13:${1:a}_{34}} \\\\
+	${14:${1:a}_{41}} & ${15:${1:a}_{42}} & ${16:${1:a}_{43}} & ${17:${1:a}_{44}}
+\end{bmatrix}
+$0
+endsnippet
+
+snippet bmatn "bmatrix nxn" i
+\begin{bmatrix}
+	${1:a}_{11} & $1_{12} & \cdots & $1_{1${2:n}} \\\\
+	$1_{21} & $1_{22} & \cdots & $1_{2$2} \\\\
+	\vdots & \vdots & \ddots & \vdots \\\\
+	$1_{$2 1} & $1_{$2 2} & \cdots & $1_{$2$2}
+\end{bmatrix}
+$0
+endsnippet
+
+snippet vmat2 "vmatrix 2x2" i
+\begin{vmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} \\\\
+	${4:${1:a}_{21}} & ${5:${1:a}_{22}}
+\end{vmatrix}
+$0
+endsnippet
+
+snippet vmat3 "vmatrix 3x3" i
+\begin{vmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} & ${4:${1:a}_{13}} \\\\
+	${5:${1:a}_{21}} & ${6:${1:a}_{22}} & ${7:${1:a}_{23}} \\\\
+	${8:${1:a}_{31}} & ${9:${1:a}_{32}} & ${10:${1:a}_{33}}
+\end{vmatrix}
+$0
+endsnippet
+
+snippet vmat4 "vmatrix 4x4" i
+\begin{vmatrix}
+	${2:${1:a}_{11}} & ${3:${1:a}_{12}} & ${4:${1:a}_{13}} & ${5:${1:a}_{14}} \\\\
+	${6:${1:a}_{21}} & ${7:${1:a}_{22}} & ${8:${1:a}_{23}} & ${9:${1:a}_{24}} \\\\
+	${10:${1:a}_{31}} & ${11:${1:a}_{32}} & ${12:${1:a}_{33}} & ${13:${1:a}_{34}} \\\\
+	${14:${1:a}_{41}} & ${15:${1:a}_{42}} & ${16:${1:a}_{43}} & ${17:${1:a}_{44}}
+\end{vmatrix}
+$0
+endsnippet
+
+snippet vmatn "vmatrix nxn" i
+\begin{vmatrix}
+	${1:a}_{11} & $1_{12} & \cdots & $1_{1${2:n}} \\\\
+	$1_{21} & $1_{22} & \cdots & $1_{2$2} \\\\
+	\vdots & \vdots & \ddots & \vdots \\\\
+	$1_{$2 1} & $1_{$2 2} & \cdots & $1_{$2$2}
+\end{vmatrix}
+$0
 endsnippet
 
 context "math()"
@@ -225,6 +342,10 @@ endsnippet
 context "math()"
 snippet tr "to the ... power" iA
 ^{\prime}$0
+endsnippet
+
+snippet ts "transpose" iA
+^{\mathrm{T}}$0
 endsnippet
 
 snippet __ "subscript" iA
@@ -332,13 +453,13 @@ endsnippet
 
 priority 100
 context "math()"
-snippet '(?<!\\)(sin|cos|arccot|cot|csc|ln|log|exp|star|perp)' "ln" rwA
+snippet '(?<!\\)(sin|cos|arccot|cot|csc|ln|log|exp|star|perp|rank|diag|det|dim|ker|vec)' "operators" rwA
 \\`!p snip.rv = match.group(1)`
 endsnippet
 
 # 自动为希腊字母添加反斜杠
 context "math()"
-snippet "(?<!\\)(alpha|beta|gamma|delta|epsilon|zeta|eta|theta|rho|sigma|tau|upsilon|phi|chi|psi|omega)" "Greek letters" rwA
+snippet "(?<!\\)(alpha|beta|gamma|delta|epsilon|zeta|eta|theta|lambda|rho|sigma|tau|upsilon|phi|chi|psi|omega)" "Greek letters" rwA
 \\`!p snip.rv = match.group(1)`
 endsnippet
 
@@ -493,7 +614,7 @@ snippet bigfun "Big function" iA
 endsnippet
 
 snippet cvec "column vector" iA
-\begin{pmatrix} ${1:x}_${2:1}\\ \vdots\\ $1_${2:n} \end{pmatrix}
+\begin{pmatrix} ${1:x}_${2:1}\\\\ \vdots\\\\ $1_${2:n} \end{pmatrix}
 endsnippet
 
 priority 10
