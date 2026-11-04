@@ -25,11 +25,19 @@ return {
         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, true, true), "m", true)
       end
 
+      -- UltiSnips#CanExpandSnippet 等内部走 py3eval，返回 v:true/v:false；
+      -- 经 vim.fn 转成 Lua 后是 boolean，和数字 1 比较恒为假，必须同时接受 true。
       local function ultisnips_can(fn)
-        return vim.fn.exists("*" .. fn) == 1 and vim.fn[fn]() == 1
+        if vim.fn.exists("*" .. fn) ~= 1 then
+          return false
+        end
+        local ok = vim.fn[fn]()
+        return ok == 1 or ok == true
       end
 
-      local has_ultisnips = vim.fn.exists("*UltiSnips#Anon") == 1
+      -- exists("*autoload#func") 不会加载 autoload 文件；这里用 pcall 强制加载
+      -- UltiSnips，否则 InsertEnter 时恒为 false，ultisnips 源和 snippet.expand 都不启用。
+      local has_ultisnips = pcall(vim.fn["UltiSnips#RefreshSnippets"])
       local cmp_sources = {
         { name = "nvim_lsp" },
         { name = "path" },
