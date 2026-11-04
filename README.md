@@ -21,7 +21,7 @@ There is intentionally no machine-role system. Optional features are controlled 
 lua/core/settings.lua
 ```
 
-The defaults enable the normal daily setup. Experimental branches may flip `ui` or `experiments` entries there.
+The defaults enable the normal daily setup. `exp/*` experiment branches may flip `ui` or `experiments` entries there.
 
 ```lua
 return {
@@ -119,18 +119,19 @@ Prose filetypes opt into wrapping through `after/ftplugin/markdown.lua` and `aft
 
 `exrc` is enabled. Project-specific settings can live in `.nvim.lua`; Neovim's trust database still gates execution (`:trust`). This is intended for project-local MCU paths, build directories, ELF names and debugger settings rather than putting project details into the global config.
 
-## Experimental branches
+## Branch strategy
 
-Experiments are kept on separate branches so they can be evaluated without turning the main configuration into a plugin collection:
+`main` is the daily baseline and the branch that `~/.config/nvim` points to. Feature work lands directly on `main` with linear history.
 
-- `next/core-refresh` — cleaned baseline and configuration architecture
-- `exp/ime-squirrel-cli` — Squirrel CLI modal-state bridge
+`exp/*` branches are isolated experiments kept for reference; they are not merged wholesale into `main`. Test them with `NVIM_APPNAME` worktrees:
+
+- `exp/ime-squirrel-cli` — early Squirrel CLI prototype, superseded by `lua/core/ime.lua`
 - `exp/ui-snacks` — selected Snacks modules only
 - `exp/explorer-oil` — Oil alongside the existing explorer
 - `exp/mcu-overseer` — task-oriented CMake/OpenOCD MCU workflow
 - `exp/pet-companion` — extmark-based in-buffer companion prototype
 
-See `docs/EXPERIMENTS.md` for isolated testing with `NVIM_APPNAME`.
+The former `next/core-refresh` integration branch was merged into `main` and deleted. See `docs/EXPERIMENTS.md` for the isolated experiment workflow.
 
 ## License
 

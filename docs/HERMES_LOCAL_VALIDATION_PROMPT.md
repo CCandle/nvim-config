@@ -1,5 +1,9 @@
 # Hermes local validation prompt
 
+> Historical note (2026-11): `next/core-refresh` has been merged into `main` and
+> the branch was deleted; this prompt is kept as a record of the original
+> isolated branch-validation pass.
+
 Use this prompt from the local Mac after fetching the experiment branches.
 
 ---

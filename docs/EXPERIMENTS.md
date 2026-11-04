@@ -1,5 +1,7 @@
 # Isolated experiment workflow
 
+`main` is the daily baseline; experiment branches under `exp/*` are kept for reference and are never merged wholesale. The former `next/core-refresh` integration branch has been merged into `main` and deleted.
+
 Use `NVIM_APPNAME` rather than only `nvim -u`. `NVIM_APPNAME` gives each experiment its own config, data, state and cache roots, so Lazy/Mason/parser state from the daily configuration is not accidentally reused.
 
 ## Recommended: Git worktrees
@@ -9,7 +11,6 @@ From a normal clone of this repository:
 ```bash
 git fetch origin
 
-git worktree add ~/.config/nvim-core origin/next/core-refresh
 git worktree add ~/.config/nvim-snacks origin/exp/ui-snacks
 git worktree add ~/.config/nvim-oil origin/exp/explorer-oil
 git worktree add ~/.config/nvim-ime origin/exp/ime-squirrel-cli
@@ -20,7 +21,6 @@ git worktree add ~/.config/nvim-pet origin/exp/pet-companion
 Run one configuration with:
 
 ```bash
-NVIM_APPNAME=nvim-core nvim
 NVIM_APPNAME=nvim-snacks nvim
 NVIM_APPNAME=nvim-oil nvim
 NVIM_APPNAME=nvim-ime nvim
