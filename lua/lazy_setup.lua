@@ -64,7 +64,11 @@ add_if(settings.experiments.snacks, "plugins.snacks")
 add_if(settings.experiments.oil, "plugins.oil")
 add_if(settings.experiments.pet, "plugins.pet")
 
-require("lazy").setup(plugins)
+-- Local plugin projects live under ~/Coding; plugins with `dev = true` use them
+-- when present and fall back to their GitHub repository when absent.
+require("lazy").setup(plugins, {
+  dev = { path = "~/Coding", fallback = true },
+})
 
 if settings.ime.squirrel_cli then
   require("core.ime").setup()
