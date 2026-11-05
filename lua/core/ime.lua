@@ -28,8 +28,9 @@ local SET_TIMEOUT_MS = 3000
 local state = {
   enabled = true,
   setup_done = false,
-  saved = {}, -- bufnr -> true (English/ASCII) | false (Chinese)
-  generation = 0, -- bumped by every InsertEnter / InsertLeave
+  saved = {}, -- bufnr -> preferred prose input mode: true (English) | false (Chinese)
+  math_active = {}, -- bufnr -> true while the cursor is in an MK math snippet
+  generation = 0, -- bumped by every InsertEnter / InsertLeave / math transition
   warned = false, -- one-shot warning, reset once a CLI call succeeds
   stats = {
     queries = 0,
@@ -245,7 +246,9 @@ local function leave_insert(buf)
     if generation ~= state.generation or not state.enabled then
       return
     end
-    if ascii ~= nil then
+    -- Do not let a temporary math-zone English mode overwrite the buffer's
+    -- preferred prose input mode.
+    if ascii ~= nil and not state.math_active[buf] then
       state.saved[buf] = ascii
     end
     if not in_insert_mode() then
@@ -260,8 +263,39 @@ local function enter_insert(buf)
   end
 
   state.generation = state.generation + 1
-  -- nil (never seen) and true both mean "English"; false restores Chinese.
-  request_ascii(state.saved[buf] ~= false)
+  -- A math snippet temporarily owns the input mode, independently of the
+  -- buffer's remembered prose preference.
+  if state.math_active[buf] then
+    request_ascii(true)
+  else
+    -- nil (never seen) and true both mean "English"; false restores Chinese.
+    request_ascii(state.saved[buf] ~= false)
+  end
+end
+
+local function set_math_mode(buf, active)
+  if not runnable_buffer(buf) then
+    return
+  end
+
+  state.generation = state.generation + 1
+  state.math_active[buf] = active
+
+  if active then
+    request_ascii(true)
+  else
+    -- The inline-math snippet ends outside '$...$'; prose resumes in Chinese.
+    state.saved[buf] = false
+    request_ascii(false)
+  end
+end
+
+function M.enter_math(buf)
+  set_math_mode(buf or vim.api.nvim_get_current_buf(), true)
+end
+
+function M.leave_math(buf)
+  set_math_mode(buf or vim.api.nvim_get_current_buf(), false)
 end
 
 local function saved_label(ascii)
@@ -320,6 +354,7 @@ function M.setup()
     group = group,
     callback = function(args)
       state.saved[args.buf] = nil
+      state.math_active[args.buf] = nil
     end,
   })
 
