@@ -72,7 +72,7 @@ calls are asynchronous and never block the UI.
 
 - Normal/Visual mode and Neovim startup: English.
 - `InsertEnter`: restore the state saved for the current buffer (English if unset).
-- `InsertLeave`: save the current state, then switch back to English.
+- `InsertLeave`: save the prose input state (not temporary `MK` math mode), then switch back to English.
 - Rapid mode switches are coalesced, so a stale asynchronous reply cannot win.
 - `NVIM_SQUIRREL_BIN` overrides the default binary path
   (`/Library/Input Methods/Squirrel.app/Contents/MacOS/Squirrel`).
