@@ -118,6 +118,13 @@ copied), other lines show the rendered form. `<leader>cc` toggles conceal in tex
 buffers (`0` = raw source, `2` = rendered), e.g. to check `&` alignment in
 matrices.
 
+Existing text can be wrapped by a snippet through UltiSnips' `${VISUAL}`
+placeholder: select it (`v`, `V`, `viw`, ...), press `<Tab>` in visual mode (the
+selection is cut and you land in insert mode), then type the trigger — `mk`
+gives inline `$...$`, `dm` gives `\[...\]`, `sq` gives `\sqrt{...}`, `lr(`
+gives `\left( ... \right)`. Triggers with the auto flag expand as soon as they
+are typed; the rest need a final `<Tab>`.
+
 Useful native/VimTeX text objects already cover most surround-editing needs:
 
 - `ca(` / `ci(`: change around / inside parentheses using Vim's native text object
