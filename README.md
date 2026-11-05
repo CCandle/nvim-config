@@ -109,6 +109,13 @@ the ToC open; `<Space>` stays free for the leader key.
 indent from `latexindent.yaml`); tex is not formatted on save. A visual-mode
 selection only works when it contains whole environments.
 
+VimTeX conceal is on in tex buffers (`conceallevel=2`): commands such as
+`\leftarrow`, `\ddots`, `\sum` render as unicode symbols, while environments
+(`\begin`/`\end`, matrix and `array` environments included) and the math
+delimiters `$`, `$$`, `\[`, `\(` stay visible, so environments remain easy to
+find. Normal mode shows the rendered form, insert mode shows the raw source
+line. Use `:setlocal conceallevel=0` to read the source instead.
+
 Useful native/VimTeX text objects already cover most surround-editing needs:
 
 - `ca(` / `ci(`: change around / inside parentheses using Vim's native text object

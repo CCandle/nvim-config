@@ -37,6 +37,18 @@ return { -- VimTeX 主插件
 
 			-- 语法高亮（你新加的）
 			vim.g.vimtex_syntax_enabled = 1
+
+			-- conceal：保留数学定界符 $ $$ \( \) \[ \] 原样显示，只把 \leftarrow、
+			-- \ddots、\sum 之类的命令渲染成 unicode 符号
+			vim.g.vimtex_syntax_conceal = {
+				math_bounds = 0,
+			}
+
+			-- amsmath 默认会把 \begin{pmatrix} 之类的矩阵环境名 conceal 成 ( [ |，
+			-- 关掉它让环境名保持可见，方便定位环境
+			vim.g.vimtex_syntax_packages = {
+				amsmath = { conceal = 0 },
+			}
 			vim.g.vimtex_imaps_enabled = 1
 			vim.g.vimtex_main_names = { "main", "master", "index" }
 			-- 告诉 VimTeX 向上搜索主文件的模式（增加 ../.. 的深度，解决 img/Trans/xx.tex 的问题）
