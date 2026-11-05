@@ -102,6 +102,8 @@ VimTeX + UltiSnips + Skim + latexmk/XeLaTeX remain the main workflow.
 
 In tex buffers `<leader>e` opens the explorer and the VimTeX ToC in one left
 column: tree on top (60%), ToC below (40%). Closing the tree closes the ToC.
+In the ToC window `o` / `<CR>` jump to the entry in the editor window and keep
+the ToC open; `<Space>` stays free for the leader key.
 
 Useful native/VimTeX text objects already cover most surround-editing needs:
 

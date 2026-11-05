@@ -50,6 +50,10 @@ return { -- VimTeX 主插件
 				show_numbers = 1,
 			}
 		end,
+		config = function()
+			-- ToC window bindings: o/<CR> open in the editor and keep the ToC.
+			require("core.sidebar").setup()
+		end,
 	}, -- UltiSnips
 	{
 		"SirVer/ultisnips",
