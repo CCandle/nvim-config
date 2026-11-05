@@ -42,6 +42,13 @@ return { -- VimTeX 主插件
 			-- 告诉 VimTeX 向上搜索主文件的模式（增加 ../.. 的深度，解决 img/Trans/xx.tex 的问题）
 			vim.g.vimtex_index_search_patterns =
 				{ "*.tex", "main.tex", "../main.tex", "../../main.tex", "../../../main.tex" }
+
+			vim.g.vimtex_toc_config = {
+				split_width = 20,
+				layers = { "content" },
+				show_help = 0,
+				show_numbers = 1,
+			}
 		end,
 	}, -- UltiSnips
 	{
