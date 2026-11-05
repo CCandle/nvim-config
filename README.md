@@ -120,10 +120,12 @@ matrices.
 
 Existing text can be wrapped by a snippet through UltiSnips' `${VISUAL}`
 placeholder: select it (`v`, `V`, `viw`, ...), press `<Tab>` in visual mode (the
-selection is cut and you land in insert mode), then type the trigger — `mk`
-gives inline `$...$`, `dm` gives `\[...\]`, `sq` gives `\sqrt{...}`, `lr(`
-gives `\left( ... \right)`. Triggers with the auto flag expand as soon as they
-are typed; the rest need a final `<Tab>`.
+selection is cut and you land in insert mode), then type the trigger — `MK`
+gives inline `$...$` and switches Squirrel to ASCII while editing the formula;
+Tab to the post-formula placeholder restores Chinese, and Shift-Tab back into
+the formula restores ASCII. `dm` gives `\[...\]`, `sq` gives `\sqrt{...}`,
+`lr(` gives `\left( ... \right)`. Triggers with the auto flag expand as soon
+as they are typed; the rest need a final `<Tab>`.
 
 Useful native/VimTeX text objects already cover most surround-editing needs:
 
