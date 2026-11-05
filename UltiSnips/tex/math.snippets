@@ -9,6 +9,19 @@ def env(name):
 	[x,y] = vim.eval("vimtex#env#is_inside('" + name + "')") 
 	return x != '0' and y != '0'
 
+def ime_enter_math():
+	vim.command("lua require('core.ime').enter_math()")
+
+def ime_leave_math():
+	vim.command("lua require('core.ime').leave_math()")
+
+def ime_math_jump(snip):
+	# $1 is inside the formula; $2 is the existing post-formula position.
+	if snip.tabstop == 2:
+		ime_leave_math()
+	elif snip.tabstop == 1 and str(snip.jump_direction) == '-1':
+		ime_enter_math()
+
 endglobal
 
 
@@ -43,7 +56,10 @@ snippet iff "iff" Ai
 \iff
 endsnippet
 
-snippet mk "Math" wA
+context "not math()"
+post_expand "ime_enter_math()"
+post_jump "ime_math_jump(snip)"
+snippet MK "Math" wA
 $${1:${VISUAL}}$`!p
 if t[2] and t[2][0] not in [',', '.', '?', '-', ' ']:
 	snip.rv = ' '
@@ -714,10 +730,10 @@ endsnippet
 
 context "math()"
 snippet max "max" iA
-\text{max}
+\max
 endsnippet
 
 context "math()"
 snippet min "min" iA
-\text{min}
+\min
 endsnippet
