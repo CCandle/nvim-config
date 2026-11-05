@@ -65,6 +65,18 @@ return { -- VimTeX 主插件
 		config = function()
 			-- ToC window bindings: o/<CR> open in the editor and keep the ToC.
 			require("core.sidebar").setup()
+
+			-- conceallevel/concealcursor 是窗口本地选项：after/ftplugin 只在 buffer
+			-- 载入时设一次，窗口晚于 buffer 显示（session 恢复、新 split 等）时可能
+			-- 漏掉，这里在进入窗口时兜底补上 concealcursor
+			vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+				group = vim.api.nvim_create_augroup("vimtex_conceal_opts", { clear = true }),
+				callback = function()
+					if vim.bo.filetype == "tex" and vim.wo.concealcursor ~= "n" then
+						vim.wo.concealcursor = "n"
+					end
+				end,
+			})
 		end,
 	}, -- UltiSnips
 	{
