@@ -281,12 +281,13 @@ local function set_math_mode(buf, active)
   state.generation = state.generation + 1
   state.math_active[buf] = active
 
-  if active then
-    request_ascii(true)
-  else
+  if not active then
     -- The inline-math snippet ends outside '$...$'; prose resumes in Chinese.
     state.saved[buf] = false
-    request_ascii(false)
+  end
+
+  if state.enabled and bin_path() then
+    request_ascii(active)
   end
 end
 
