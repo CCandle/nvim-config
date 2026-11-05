@@ -637,7 +637,8 @@ snippet DD "D" iA
 \mathbb{D}
 endsnippet
 
-snippet dd "微分" iA
+# 手动触发：自动展开会在输入 vdots/cdots/ddots 时抢占
+snippet dd "微分" i
 \frac{\d ${1:u}}{\d ${2:x}} $0
 endsnippet
 
@@ -647,8 +648,26 @@ endsnippet
 
 priority 400
 context "math()"
-snippet dot "\dot{}" iA
+snippet dot "\dot{}" wA
 \dot{${1:${VISUAL}}}$0
+endsnippet
+
+priority 400
+context "math()"
+snippet vdots "\vdots" wA
+\vdots
+endsnippet
+
+priority 400
+context "math()"
+snippet cdots "\cdots" wA
+\cdots
+endsnippet
+
+priority 400
+context "math()"
+snippet ddots "\ddots" wA
+\ddots
 endsnippet
 
 priority 400
