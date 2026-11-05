@@ -1,0 +1,3 @@
+# latexindent settings for conform.nvim (<leader>cf in tex buffers).
+# Two spaces to match the notes; alignment of & in align/tabular stays on.
+defaultIndent: "  "

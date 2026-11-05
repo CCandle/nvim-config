@@ -105,6 +105,10 @@ column: tree on top (60%), ToC below (40%). Closing the tree closes the ToC.
 In the ToC window `o` / `<CR>` jump to the entry in the editor window and keep
 the ToC open; `<Space>` stays free for the leader key.
 
+`<leader>cf` formats tex on demand with `latexindent` (mason build, two-space
+indent from `latexindent.yaml`); tex is not formatted on save. A visual-mode
+selection only works when it contains whole environments.
+
 Useful native/VimTeX text objects already cover most surround-editing needs:
 
 - `ca(` / `ci(`: change around / inside parentheses using Vim's native text object
