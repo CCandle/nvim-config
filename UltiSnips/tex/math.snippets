@@ -22,10 +22,22 @@ snippet => "implies" Ai
 \implies
 endsnippet
 
+priority 300
+snippet !=> "not implies" Ai
+\centernot\implies
+endsnippet
+
+priority 100
 snippet =< "implied by" Ai
 \impliedby
 endsnippet
 
+priority 300
+snippet !=< "not implied by" Ai
+\centernot\impliedby
+endsnippet
+
+priority 100
 context "math()"
 snippet iff "iff" Ai
 \iff
@@ -109,7 +121,8 @@ snippet == "equals" iA
 &= $1 \\
 endsnippet
 
-snippet != "equals" iA
+# 输入 "!=" 时不展开，只有跟着空格 ("!= ") 才展开成 \neq
+snippet '!= ' "neq" rA
 \neq 
 endsnippet
 
@@ -502,30 +515,6 @@ endsnippet
 context "math()"
 snippet !> "mapsto" iA
 \mapsto 
-endsnippet
-
-priority 100
-context "math()"
-snippet Ra "Rightarrow" iA
-\Rightarrow
-endsnippet
-
-priority 300
-context "math()"
-snippet nRa "nRightarrow" iA
-\nRightarrow
-endsnippet
-
-priority 100
-context "math()"
-snippet La "Leftarrow" iA
-\Leftarrow
-endsnippet
-
-priority 300
-context "math()"
-snippet nLa "nLeftarrow" iA
-\nLeftarrow
 endsnippet
 
 context "math()"
