@@ -58,7 +58,7 @@ return {
 - `<C-h/j/k/l>`: window navigation
 - `<leader>pf`: find files
 - `<leader>pg`: live grep
-- `<leader>e`: Neo-tree
+- `<leader>e`: Neo-tree (in tex buffers the VimTeX ToC stacks below it)
 - `<leader>tt` / `<C-\>`: floating terminal
 - `<leader>gg`: Neogit
 
@@ -99,6 +99,9 @@ LaTeX highlighting is deliberately left to VimTeX because several VimTeX feature
 ## LaTeX
 
 VimTeX + UltiSnips + Skim + latexmk/XeLaTeX remain the main workflow.
+
+In tex buffers `<leader>e` opens the explorer and the VimTeX ToC in one left
+column: tree on top (60%), ToC below (40%). Closing the tree closes the ToC.
 
 Useful native/VimTeX text objects already cover most surround-editing needs:
 

@@ -5,7 +5,9 @@ return {
     cmd = "Neotree",
     keys = {{
         "<leader>e",
-        "<cmd>Neotree toggle<CR>",
+        function()
+            require("core.sidebar").toggle()
+        end,
         desc = "Toggle Explorer"
     }, {
         "<leader>o",
@@ -18,6 +20,20 @@ return {
             popup_border_style = "rounded",
             enable_git_status = true,
             enable_diagnostics = true,
+            event_handlers = {
+                {
+                    event = "neo_tree_window_after_open",
+                    handler = function()
+                        require("core.sidebar").on_tree_open()
+                    end
+                },
+                {
+                    event = "neo_tree_window_after_close",
+                    handler = function()
+                        require("core.sidebar").on_tree_close()
+                    end
+                }
+            },
             default_component_configs = {
                 indent = {
                     indent_size = 2,

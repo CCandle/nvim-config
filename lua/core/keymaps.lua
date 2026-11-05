@@ -38,7 +38,7 @@ wk.add({
   { "<C-s>", "<ESC>:w<CR>", desc = "Save file", mode = { "i", "n", "v" } },
 
   { "<leader>f", group = "+file/explorer" },
-  { "<leader>e", "<cmd>Neotree toggle<CR>", desc = "Toggle Explorer (Neo-tree)", cond = settings.ui.explorer ~= "oil" },
+  { "<leader>e", "<cmd>lua require('core.sidebar').toggle()<CR>", desc = "Toggle Explorer (+ VimTeX ToC)", cond = settings.ui.explorer ~= "oil" },
   { "<leader>o", "<cmd>Neotree focus<CR>", desc = "Focus Explorer", cond = settings.ui.explorer ~= "oil" },
   { "<leader>ff", "<cmd>Neotree reveal<CR>", desc = "Reveal current file", cond = settings.ui.explorer ~= "oil" },
 
