@@ -13,7 +13,7 @@ vim.keymap.set("n", "<leader>cc", function()
 end, { buffer = true, desc = "Toggle VimTeX conceal" })
 
 -- visual 选中后按 <Tab>：把选区存进 UltiSnips 的 ${VISUAL}，删除选区并进入插入模式；
--- 再输入 mk/dm/sqrt/lr( 等触发器（带 A 的会边打边展开），即可把选中内容包起来。
+-- 再输入 MK/dm/sqrt/lr( 等触发器（带 A 的会边打边展开），即可把选中内容包起来。
 -- 插入模式里的 <Tab> 由 nvim-cmp 转给同一个 <Plug>（见 lua/plugins/completion.lua）。
 vim.keymap.set("x", "<Tab>", "<Plug>(ultisnips_expand)", {
 	buffer = true,
