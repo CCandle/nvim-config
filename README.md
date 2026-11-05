@@ -114,7 +114,8 @@ VimTeX conceal is on in tex buffers (`conceallevel=2`): commands such as
 (`\begin`/`\end`, matrix and `array` environments included) and the math
 delimiters `$`, `$$`, `\[`, `\(` stay visible, so environments remain easy to
 find. Normal mode shows the rendered form, insert mode shows the raw source
-line. Use `:setlocal conceallevel=0` to read the source instead.
+line. `<leader>cc` toggles conceal in tex buffers (`0` = raw source, `2` =
+rendered), e.g. to check `&` alignment in matrices.
 
 Useful native/VimTeX text objects already cover most surround-editing needs:
 
