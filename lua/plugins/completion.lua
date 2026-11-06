@@ -57,7 +57,19 @@ return {
         mapping = cmp.mapping.preset.insert({
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = false }),
+          -- <CR>：先按原行为确认补全；tex 列表环境交给 core/tex.lua 自动补
+          -- \item；其余情况落回 nvim-autopairs 的 <CR>（自动括号换行）。
+          ["<CR>"] = cmp.mapping(function(fallback)
+            if cmp.visible() and cmp.get_active_entry() then
+              if cmp.confirm({ select = false }) then
+                return
+              end
+            end
+            if require("core.tex").on_cr() then
+              return
+            end
+            fallback()
+          end, { "i" }),
           ["<C-n>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<C-p>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
           ["<Tab>"] = cmp.mapping(function(fallback)

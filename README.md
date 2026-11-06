@@ -127,6 +127,15 @@ the formula restores ASCII. `dm` gives `\[...\]`, `sq` gives `\sqrt{...}`,
 `lr(` gives `\left( ... \right)`. Triggers with the auto flag expand as soon
 as they are typed; the rest need a final `<Tab>`.
 
+Inside `itemize`, `enumerate` and `description`, `<CR>` at the end of a line
+opens a new line with `\item ` (keeping the current indentation). A second
+`<CR>` on that fresh, still empty `\item ` line turns it into a blank line and
+moves the cursor to a new line below, so the list can be closed. Only the
+innermost surrounding environment is considered, so `<CR>` inside a nested
+`equation`, `minipage`, ... keeps the normal behaviour. The logic lives in
+`lua/core/tex.lua`; `<CR>` still confirms nvim-cmp entries and otherwise falls
+back to nvim-autopairs.
+
 Useful native/VimTeX text objects already cover most surround-editing needs:
 
 - `ca(` / `ci(`: change around / inside parentheses using Vim's native text object
