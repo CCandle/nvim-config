@@ -60,6 +60,12 @@ snippet spara "sub paragraph" bA
 $0
 endsnippet
 
+# 行内关键词：\keyword{}（CarlosTeal 绿色小标签）；math 区里不触发
+context "not math()"
+snippet KW "keyword" iA
+\keyword{$1}$0
+endsnippet
+
 snippet reft "Autoref table" wA
 \autoref{tab:${1:${VISUAL}}} $0
 endsnippet
