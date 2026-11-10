@@ -16,6 +16,7 @@ git worktree add ~/.config/nvim-oil origin/exp/explorer-oil
 git worktree add ~/.config/nvim-ime origin/exp/ime-squirrel-cli
 git worktree add ~/.config/nvim-mcu origin/exp/mcu-overseer
 git worktree add ~/.config/nvim-pet origin/exp/pet-companion
+git worktree add ~/.config/nvim-dashboard origin/exp/dashboard-anime
 ```
 
 Run one configuration with:
@@ -26,6 +27,7 @@ NVIM_APPNAME=nvim-oil nvim
 NVIM_APPNAME=nvim-ime nvim
 NVIM_APPNAME=nvim-mcu nvim
 NVIM_APPNAME=nvim-pet nvim
+NVIM_APPNAME=nvim-dashboard nvim
 ```
 
 Each name gets independent runtime directories such as `~/.local/share/nvim-pet` and `~/.cache/nvim-pet`.
@@ -50,4 +52,6 @@ After removing a worktree, its isolated runtime data can also be removed:
 ```bash
 git worktree remove ~/.config/nvim-pet
 rm -rf ~/.local/share/nvim-pet ~/.local/state/nvim-pet ~/.cache/nvim-pet
+git worktree remove ~/.config/nvim-dashboard
+rm -rf ~/.local/share/nvim-dashboard ~/.local/state/nvim-dashboard ~/.cache/nvim-dashboard
 ```

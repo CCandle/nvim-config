@@ -11,7 +11,7 @@ A personal Neovim setup for C/C++, embedded development, Python, LaTeX and Markd
 - `tree-sitter` CLI >= 0.26.1 for installing/updating parsers
 - `ripgrep` for Telescope / Obsidian search
 
-Optional toolchains are only needed when their feature is used: clangd/clang-format, Python tooling, LaTeX + latexmk + Skim, CMake/OpenOCD/ARM GCC, Ollama, etc.
+Optional toolchains are only needed when their feature is used: clangd/clang-format, Python tooling, LaTeX + latexmk + Skim, CMake/OpenOCD/ARM GCC, Ollama, etc. Chafa is optional and only used by the exp/dashboard-anime dashboard experiment.
 
 ## Configuration model
 
@@ -166,6 +166,7 @@ Prose filetypes opt into wrapping through `after/ftplugin/markdown.lua` and `aft
 - `exp/explorer-oil` — Oil alongside the existing explorer
 - `exp/mcu-overseer` — task-oriented CMake/OpenOCD MCU workflow
 - `exp/pet-companion` — extmark-based in-buffer companion prototype
+- `exp/dashboard-anime` — Snacks + Chafa animated anime dashboard
 
 The former `next/core-refresh` integration branch was merged into `main` and deleted. See `docs/EXPERIMENTS.md` for the isolated experiment workflow.
 
