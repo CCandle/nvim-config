@@ -241,6 +241,23 @@ snippet smry "小结" b
 $0
 endsnippet
 
+# --- 主动回忆 / 易错辨析（CarlosTexNote v0.2.0） -----------------------------
+
+snippet recall "闭卷提取" b
+\begin{recallbox}[${1:闭卷提取}]
+	$2
+\end{recallbox}
+$0
+endsnippet
+
+# mist 是 warningbox 的易错辨析别名；原有 warn 触发词保持不变。
+snippet mist "易错辨析" b
+\begin{warningbox}[${1:易错辨析}]
+	$2
+\end{warningbox}
+$0
+endsnippet
+
 snippet pac "Package" b
 \usepackage[${1:options}]{${2:package}}$0
 endsnippet
