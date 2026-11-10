@@ -4,14 +4,28 @@ local function image_path()
   return vim.fs.joinpath(vim.fn.stdpath("config"), "assets", "dashboard", "yoru-desk.gif")
 end
 
+local function chafa_executable()
+  local path = vim.fn.exepath("chafa")
+  if path ~= "" then
+    return path
+  end
+
+  -- GUI-launched Neovim may not inherit Homebrew's PATH.
+  for _, candidate in ipairs({ "/opt/homebrew/bin/chafa", "/usr/local/bin/chafa" }) do
+    if vim.fn.executable(candidate) == 1 then
+      return candidate
+    end
+  end
+end
+
 local function has_chafa()
-  return vim.fn.executable("chafa") == 1 and vim.fn.filereadable(image_path()) == 1
+  return chafa_executable() ~= nil and vim.fn.filereadable(image_path()) == 1
 end
 
 local function image_command(width, height)
   local size = ("%dx%d"):format(width, height)
   return {
-    vim.fn.exepath("chafa"),
+    chafa_executable(),
     "--probe", "off",
     "--format", "symbols",
     "--symbols", "vhalf",
@@ -20,6 +34,7 @@ local function image_command(width, height)
     "--duration", "inf",
     "--speed", "0.85",
     "--work", "3",
+    "--threads", "2",
     "--align", "hcenter",
     "--exact-size", "off",
     "--size", size,
@@ -97,7 +112,7 @@ local function dashboard_sections()
       title = "QUICK ACTIONS",
       icon = "󰌌 ",
       section = "keys",
-      gap = 1,
+      gap = 0,
       padding = { 1, 1 },
     }
     sections[#sections + 1] = {
@@ -139,7 +154,7 @@ local function dashboard_sections()
       title = "QUICK ACTIONS",
       icon = "󰌌 ",
       section = "keys",
-      gap = 1,
+      gap = 0,
       padding = { 1, 1 },
     }
     sections[#sections + 1] = {
